@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ronak Surana — Software & Data Engineer</title>
+<meta name="description" content="Ronak Surana builds full-stack applications and data pipelines — Snowflake, dbt, PySpark, Microsoft Fabric.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #0a0e1a;
+  --bg-raised: #0e1422;
+  --surface: #131a2b;
+  --surface-2: #1a2338;
+  --line: #232c42;
+  --line-soft: #1a2236;
+  --text: #edeff5;
+  --text-muted: #9aa3ba;
+  --text-faint: #626d89;
+  --flow: #34d399;
+  --flow-dim: #1e4536;
+  --insight: #e8a33d;
+  --insight-dim: #4a3a1f;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.24), 0 1px 1px rgba(0,0,0,0.12);
+  --shadow-md: 0 12px 28px -8px rgba(0,0,0,0.45);
+  --shadow-glow: 0 0 0 1px var(--flow-dim), 0 8px 30px -6px rgba(91,141,239,0.35);
+}
+
+[data-theme="light"] {
+  --shadow-sm: 0 1px 2px rgba(20,30,60,0.06), 0 1px 1px rgba(20,30,60,0.04);
+  --shadow-md: 0 16px 32px -12px rgba(20,30,60,0.16);
+  --shadow-glow: 0 0 0 1px var(--flow-dim), 0 8px 30px -8px rgba(58,99,214,0.18);
+  --bg: #f6f7fb;
+  --bg-raised: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #eef0f8;
+  --line: #dde1ee;
+  --line-soft: #e7e9f2;
+  --text: #131829;
+  --text-muted: #565f7a;
+  --text-faint: #848da8;
+  --flow: #0d9668;
+  --flow-dim: #cdeee1;
+  --insight: #b5720f;
+  --insight-dim: #f2ddb5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--flow); outline-offset: 3px; }
+
+/* ---------- preloader ---------- */
+#preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 18px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.preloader-mark {
+  font-family: var(--font-display); font-weight: 600; font-size: 22px;
+  color: var(--text); letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 12px;
+}
+.preloader-ring {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--flow);
+  animation: spin 0.8s linear infinite;
+}
+.preloader-bar {
+  width: 140px; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden;
+}
+.preloader-bar::after {
+  content: ''; display: block; height: 100%; width: 40%; background: var(--flow);
+  animation: barSlide 1.1s ease-in-out infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes barSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader-ring, .preloader-bar::after { animation: none; }
+}
+
+.ambient {
+  position: fixed; inset: 0; z-index: -3; pointer-events: none;
+  background: var(--bg);
+}
+.aurora { position: fixed; inset: -10%; z-index: -2; overflow: hidden; pointer-events: none; filter: blur(4px); }
+.aurora-blob {
+  position: absolute; border-radius: 50%; filter: blur(110px);
+  mix-blend-mode: screen; will-change: transform, filter;
+}
+[data-theme="light"] .aurora-blob { mix-blend-mode: multiply; filter: blur(110px) saturate(1.1); }
+.aurora-1 {
+  width: 60vw; height: 60vw; top: -18vw; left: -10vw;
+  background: radial-gradient(circle, var(--flow) 0%, transparent 70%);
+  opacity: 0.55;
+  animation: auroraDrift1 26s ease-in-out infinite;
+}
+.aurora-2 {
+  width: 50vw; height: 50vw; bottom: -14vw; right: -8vw;
+  background: radial-gradient(circle, var(--insight) 0%, transparent 70%);
+  opacity: 0.4;
+  animation: auroraDrift2 32s ease-in-out infinite;
+}
+.aurora-3 {
+  width: 42vw; height: 42vw; top: 30%; left: 55%;
+  background: radial-gradient(circle, var(--flow) 0%, transparent 70%);
+  opacity: 0.3;
+  animation: auroraDrift3 38s ease-in-out infinite;
+}
+[data-theme="light"] .aurora-1 { opacity: 0.35; }
+[data-theme="light"] .aurora-2 { opacity: 0.28; }
+[data-theme="light"] .aurora-3 { opacity: 0.2; }
+
+@keyframes auroraDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(8vw, 10vw) scale(1.15); }
+}
+@keyframes auroraDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-9vw, -7vw) scale(1.1); }
+}
+@keyframes auroraDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-6vw, 6vw) scale(0.9) rotate(20deg); }
+}
+
+.grid-overlay {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--text) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text) 6%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 20%, black 30%, transparent 85%);
+}
+[data-theme="light"] .grid-overlay {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--text) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text) 8%, transparent) 1px, transparent 1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-1, .aurora-2, .aurora-3 { animation: none; }
+}
+
+/* ---------- custom cursor: minimalist ring ---------- */
+@media (pointer: fine) {
+  body { cursor: none; }
+  a, button, .skill-cell, .cert-row, .card, .tag { cursor: none; }
+
+  .cursor-ring {
+    position: fixed; top: 0; left: 0; z-index: 999; pointer-events: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1.5px solid color-mix(in srgb, var(--text) 45%, transparent);
+    background: transparent;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  }
+  .cursor-ring.hover {
+    width: 44px; height: 44px;
+    border-color: var(--flow);
+    background: color-mix(in srgb, var(--flow) 14%, transparent);
+  }
+  .cursor-ring.text-field { opacity: 0; }
+}
+@media (pointer: coarse) {
+  .cursor-ring { display: none; }
+}
+
+/* ---------- layout: fixed sidebar + scrolling content ---------- */
+.page {
+  max-width: 1300px; margin: 0 auto; padding: 0 40px;
+  display: grid; grid-template-columns: 330px 1fr; gap: 72px; align-items: start;
+  min-height: 100vh;
+}
+@media (max-width: 900px) {
+  .page { grid-template-columns: 1fr; padding: 0 24px; gap: 0; }
+}
+
+.sidebar {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 56px 0;
+}
+@media (max-width: 900px) {
+  .sidebar { position: relative; height: auto; padding: 48px 0 32px; }
+}
+
+.side-top { display: flex; flex-direction: column; gap: 20px; }
+.avatar {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--flow), var(--insight));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 28px; font-weight: 600;
+  color: #06101f; flex-shrink: 0; box-shadow: var(--shadow-glow);
+}
+[data-theme="light"] .avatar { color: #ffffff; }
+
+.side-top h1 { font-size: 1.7rem; line-height: 1.15; }
+.side-top .role { font-size: 1rem; color: var(--flow); font-weight: 500; margin-top: 6px; }
+.side-top .blurb { font-size: 0.94rem; color: var(--text-muted); margin-top: 16px; max-width: 32ch; }
+
+.side-nav { display: none; }
+@media (min-width: 901px) {
+  .side-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 44px; }
+}
+.side-nav a {
+  display: flex; align-items: center; gap: 12px; padding: 9px 0;
+  font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text-faint); transition: color 0.2s ease;
+}
+.side-nav a .dash { width: 22px; height: 1px; background: var(--text-faint); transition: width 0.2s ease, background 0.2s ease; }
+.side-nav a:hover, .side-nav a.active { color: var(--text); }
+.side-nav a:hover .dash, .side-nav a.active .dash { width: 42px; background: var(--flow); }
+.side-nav a.active { color: var(--flow); }
+
+.side-bottom { display: flex; align-items: center; gap: 14px; }
+.social-link {
+  width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
+  display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.social-link:hover { border-color: var(--flow); color: var(--flow); transform: translateY(-2px); }
+.social-link svg { width: 17px; height: 17px; }
+
+.theme-toggle {
+  width: 38px; height: 38px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
+  color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s ease, transform 0.3s ease;
+}
+.theme-toggle:hover { border-color: var(--flow); transform: rotate(12deg); }
+.theme-toggle svg { width: 16px; height: 16px; }
+.theme-toggle .sun { display: none; }
+[data-theme="light"] .theme-toggle .moon { display: none; }
+[data-theme="light"] .theme-toggle .sun { display: block; }
+
+/* ---------- main content ---------- */
+main { padding: 56px 0 80px; min-width: 0; }
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+h2 { font-size: clamp(1.4rem, 3vw, 1.7rem); line-height: 1.25; }
+h3 { font-size: 1.08rem; font-weight: 600; letter-spacing: -0.005em; }
+p { color: var(--text-muted); font-size: 1rem; }
+
+.content-section { padding-top: 8px; padding-bottom: 88px; scroll-margin-top: 32px; }
+.content-section:last-of-type { padding-bottom: 0; }
+
+.sec-head { display: flex; align-items: center; gap: 18px; margin-bottom: 32px; }
+.sec-num { font-family: var(--font-mono); font-size: 14px; color: var(--flow); flex-shrink: 0; }
+.sec-rule { flex: 1; height: 1px; background: var(--line); }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 14.5px; font-weight: 500;
+  padding: 12px 22px; border-radius: 8px; border: 1px solid var(--line);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary { background: var(--flow); border-color: var(--flow); color: #06101f; font-weight: 500; box-shadow: var(--shadow-sm); }
+[data-theme="light"] .btn-primary { color: #ffffff; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px var(--flow); }
+.btn-ghost { color: var(--text); background: var(--surface); }
+.btn-ghost:hover { border-color: var(--flow); color: var(--flow); transform: translateY(-2px); }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 26px; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+.timeline { position: relative; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--flow), var(--line)); }
+.tl-item { position: relative; padding-left: 38px; margin-bottom: 48px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-item::before { content: ''; position: absolute; left: 0; top: 6px; width: 15px; height: 15px; border-radius: 50%; background: var(--bg); border: 2px solid var(--flow); }
+.tl-item.current::before { background: var(--insight); border-color: var(--insight); box-shadow: 0 0 0 4px var(--insight-dim); }
+.tl-stage { font-size: 13px; color: var(--flow); margin-bottom: 6px; font-weight: 500; }
+.tl-item.current .tl-stage { color: var(--insight); }
+.tl-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; }
+.tl-list { margin-top: 12px; padding-left: 18px; color: var(--text-muted); }
+.tl-list li { margin-bottom: 5px; }
+.tools-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.tag { font-family: var(--font-mono); font-size: 11px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 20px; color: var(--text-muted); background: var(--surface); transition: border-color 0.15s ease, color 0.15s ease; }
+.tag:hover { border-color: var(--flow); color: var(--flow); }
+.tl-head { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+.logo-badge {
+  width: 38px; height: 38px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+  color: var(--flow); flex-shrink: 0; box-shadow: var(--shadow-sm);
+}
+
+.skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.skill-cell {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px;
+  box-shadow: var(--shadow-sm); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.skill-cell:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--flow-dim); }
+.skill-cell h3 { margin-bottom: 6px; font-size: 1rem; }
+.skill-cell p { font-size: 0.88rem; }
+
+.cert-list { display: flex; flex-direction: column; gap: 10px; }
+.cert-row {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  box-shadow: var(--shadow-sm); transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.cert-row:hover { border-color: var(--flow-dim); transform: translateX(2px); }
+.cert-row .name { font-weight: 500; font-size: 0.95rem; }
+.cert-row .issuer { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); }
+
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+@media (max-width: 700px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-link { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--line); transition: color 0.15s ease; }
+.contact-link:hover { color: var(--flow); }
+.contact-link .k { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+.contact-link .v { font-size: 1rem; }
+.contact-link .arrow { color: var(--text-faint); transition: transform 0.15s ease; }
+.contact-link:hover .arrow { transform: translateX(4px); color: var(--flow); }
+
+form { display: flex; flex-direction: column; gap: 14px; }
+label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); margin-bottom: 6px; display: block; }
+input, textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px 14px; color: var(--text); font-family: var(--font-body); font-size: 14px; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus, textarea:focus { border-color: var(--flow); box-shadow: 0 0 0 3px var(--flow-dim); }
+textarea { min-height: 100px; resize: vertical; }
+.form-note { font-size: 12px; color: var(--text-faint); margin-top: -4px; }
+
+.page-footer { margin-top: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }
+
+/* ---------- easter egg game ---------- */
+.game-modal {
+  position: fixed; inset: 0; z-index: 500;
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease;
+  padding: 20px;
+}
+.game-modal.open { opacity: 1; visibility: visible; }
+.game-panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 24px; box-shadow: var(--shadow-md); max-width: 620px; width: 100%;
+}
+.game-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.game-panel-head h3 { font-size: 1rem; }
+.game-close {
+  width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
+  color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.game-close:hover { border-color: var(--flow); color: var(--flow); }
+#game-canvas {
+  width: 100%; height: auto; display: block; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--line); touch-action: manipulation;
+}
+.game-hint { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); margin-top: 10px; text-align: center; }
+.game-cta {
+  text-align: center; margin-top: 4px; max-height: 0; opacity: 0; overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.35s ease, margin-top 0.35s ease;
+}
+.game-cta.show { max-height: 80px; opacity: 1; margin-top: 16px; }
+.game-cta p { font-size: 0.85rem; margin-bottom: 10px; }
+
+.exit-panel-body { display: flex; flex-direction: column; gap: 16px; }
+.exit-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body data-theme="dark">
+<div id="preloader">
+  <div class="preloader-mark"><span class="preloader-ring"></span>Ronak Surana</div>
+  <div class="preloader-bar"></div>
+</div>
+<div class="ambient"></div>
+<div class="aurora">
+  <div class="aurora-blob aurora-1"></div>
+  <div class="aurora-blob aurora-2"></div>
+  <div class="aurora-blob aurora-3"></div>
+</div>
+<div class="grid-overlay"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="side-top">
+      <div class="avatar">RS</div>
+      <div>
+        <h1>Ronak Surana</h1>
+        <p class="role">Software & Data Engineer</p>
+        <p class="blurb">Building full-stack apps and data pipelines at Hakkōda — Snowflake, dbt, PySpark, Microsoft Fabric.</p>
+      </div>
+      <nav class="side-nav" id="side-nav">
+        <a href="#about" data-nav="about"><span class="dash"></span>About</a>
+        <a href="#education" data-nav="education"><span class="dash"></span>Education</a>
+        <a href="#experience" data-nav="experience"><span class="dash"></span>Experience</a>
+        <a href="#skills" data-nav="skills"><span class="dash"></span>Skills</a>
+        <a href="#certifications" data-nav="certifications"><span class="dash"></span>Certifications</a>
+        <a href="#contact" data-nav="contact"><span class="dash"></span>Contact</a>
+      </nav>
+    </div>
+
+    <div class="side-bottom">
+      <a class="social-link" href="mailto:ronaksurana2017@gmail.com" aria-label="Email Ronak">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>
+      </a>
+      <a class="social-link" href="https://www.linkedin.com/in/ronaksurana09" target="_blank" rel="noopener" aria-label="Ronak on LinkedIn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 11v5M8 8v.01M12 16v-5M16 16v-3a2 2 0 0 0-4 0"/></svg>
+      </a>
+      <button class="social-link" id="game-trigger" aria-label="Take a quick break, then let's talk" title="Stay a moment, play a game, then let's talk 👋">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="15" cy="11" r="1"/><circle cx="18" cy="13" r="1"/></svg>
+      </button>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main>
+
+    <section id="about" class="content-section">
+      <div class="sec-head"><span class="sec-num">01.</span><h2>About</h2><span class="sec-rule"></span></div>
+      <div class="hero-actions" style="margin-bottom: 32px;">
+        <a href="#experience" class="btn btn-primary">See the work →</a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+      <p style="margin-bottom: 18px;">
+        I'm a software engineer and data engineer based in India, currently
+        working on client migrations at Hakkōda after starting there as an
+        associate engineer through Bot Consulting. I care about both ends of
+        a system: the interface someone clicks through, and the pipeline
+        feeding the numbers behind it.
+      </p>
+      <p>
+        On the data side, that means scalable pipelines, workflow optimization,
+        and turning messy source data into something a business can actually
+        query and trust — most recently, migrating a retail client off
+        on-premise SAP S/4HANA into Snowflake. On the software side, I build
+        full-stack applications end to end.
+      </p>
+    </section>
+
+    <section id="education" class="content-section reveal">
+      <div class="sec-head"><span class="sec-num">02.</span><h2>Education</h2><span class="sec-rule"></span></div>
+      <div class="card">
+        <div class="tl-stage">2020 – 2024</div>
+        <h3>The LNM Institute of Information Technology</h3>
+        <p style="margin-top: 8px;">B.Tech, Electrical, Electronics and Communications Engineering</p>
+      </div>
+      <div class="card" style="margin-top: 14px;">
+        <div class="tl-stage">2007 – 2019</div>
+        <h3>Maheshwari Public School</h3>
+      </div>
+    </section>
+
+    <section id="experience" class="content-section reveal">
+      <div class="sec-head"><span class="sec-num">03.</span><h2>Experience</h2><span class="sec-rule"></span></div>
+      <div class="timeline">
+        <div class="tl-item current">
+          <div class="tl-stage">Current</div>
+          <div class="tl-head">
+            <div class="logo-badge">H</div>
+            <h3>Associate Data Engineer — Hakkōda</h3>
+          </div>
+          <div class="tl-meta"><span>Feb 2025 – Present · 1 yr 7 mo</span><span>Jaipur, India</span></div>
+          <p>Supporting a fashion and retail client through a data migration from on-premise SAP S/4HANA to Snowflake, alongside stored procedure fixes for a separate client engagement.</p>
+          <ul class="tl-list">
+            <li>Corrected and maintained stored procedures for a client, working directly against their reported issues.</li>
+            <li>Migrated retail data from SAP S/4HANA to Snowflake, covering data modeling and validation end to end.</li>
+            <li>Ran root-cause analysis when migrated data didn't reconcile with source systems.</li>
+          </ul>
+          <div class="tools-row">
+            <span class="tag">Snowflake</span><span class="tag">Coalesce.io</span><span class="tag">Sigma Computing</span><span class="tag">SSMS</span><span class="tag">Azure DevOps</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-stage">Concurrent</div>
+          <div class="tl-head">
+            <div class="logo-badge">BC</div>
+            <h3>Associate Engineer — Bot Consulting</h3>
+          </div>
+          <div class="tl-meta"><span>Nov 2024 – Present · 1 yr 10 mo</span><span>Jaipur, India</span></div>
+          <p>Working as a data engineer within Hakkōda's GDC, staffed through Bot Consulting.</p>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-stage">Internship</div>
+          <div class="tl-head">
+            <div class="logo-badge">JM</div>
+            <h3>Internship Trainee — Jaipur Metro Rail Corporation</h3>
+          </div>
+          <div class="tl-meta"><span>Jun 2023 – Jul 2023 · 2 mo</span><span>Jaipur, Rajasthan, India</span></div>
+          <ul class="tl-list">
+            <li>Built a website for the signaling and telecom department covering fault registration and employee management.</li>
+            <li>Studied metro operations across domains including the UPS and Train Radio System.</li>
+            <li>Prepared a detailed report and presentation on the Train Radio System's design and setup.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="content-section reveal">
+      <div class="sec-head"><span class="sec-num">04.</span><h2>Skills</h2><span class="sec-rule"></span></div>
+      <div class="skill-grid">
+        <div class="skill-cell"><h3>Microsoft Fabric</h3><p>Data engineering and integration within Microsoft's unified analytics platform.</p></div>
+        <div class="skill-cell"><h3>SQL Server Management Studio</h3><p>Stored procedure development, debugging, and client-facing fixes.</p></div>
+        <div class="skill-cell"><h3>PySpark</h3><p>Large-scale data processing and pipeline transformation logic.</p></div>
+        <div class="skill-cell"><h3>Snowflake</h3><p>Warehouse modeling and migration off legacy on-premise systems.</p></div>
+        <div class="skill-cell"><h3>dbt & Coalesce.io</h3><p>Transformation pipelines and data modeling for downstream analytics.</p></div>
+        <div class="skill-cell"><h3>Full-Stack Development</h3><p>Front-end and back-end application development, end to end.</p></div>
+      </div>
+    </section>
+
+    <section id="certifications" class="content-section reveal">
+      <div class="sec-head"><span class="sec-num">05.</span><h2>Certifications</h2><span class="sec-rule"></span></div>
+      <div class="cert-list">
+        <div class="cert-row"><span class="name">Microsoft Certified: Fabric Data Engineer Associate</span><span class="issuer">Microsoft</span></div>
+        <div class="cert-row"><span class="name">Databricks Certified Data Engineer Associate</span><span class="issuer">Databricks</span></div>
+        <div class="cert-row"><span class="name">SnowPro Advanced: Data Engineer</span><span class="issuer">Snowflake</span></div>
+        <div class="cert-row"><span class="name">SnowPro Core Certification</span><span class="issuer">Snowflake</span></div>
+        <div class="cert-row"><span class="name">dbt Fundamentals</span><span class="issuer">dbt Labs</span></div>
+      </div>
+    </section>
+
+    <section id="contact" class="content-section reveal">
+      <div class="sec-head"><span class="sec-num">06.</span><h2>Contact</h2><span class="sec-rule"></span></div>
+      <div class="contact-grid">
+        <div>
+          <a class="contact-link" href="mailto:ronaksurana2017@gmail.com">
+            <span><span class="k">Email</span><br><span class="v">ronaksurana2017@gmail.com</span></span>
+            <span class="arrow">→</span>
+          </a>
+          <a class="contact-link" href="https://www.linkedin.com/in/ronaksurana09" target="_blank" rel="noopener">
+            <span><span class="k">LinkedIn</span><br><span class="v">linkedin.com/in/ronaksurana09</span></span>
+            <span class="arrow">→</span>
+          </a>
+          <div class="contact-link"><span><span class="k">Location</span><br><span class="v">Jaipur, India</span></span></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 18px;">Send a message</h3>
+          <form id="contact-form">
+            <div><label for="name">Name</label><input type="text" id="name" name="name" required></div>
+            <div><label for="email">Email</label><input type="email" id="email" name="email" required></div>
+            <div><label for="message">Message</label><textarea id="message" name="message" required></textarea></div>
+            <button type="submit" class="btn btn-primary" style="align-self: flex-start; border: none; cursor: pointer;">Send message →</button>
+            <p class="form-note">Opens your email client with this pre-filled — nothing is stored on this site.</p>
+          </form>
+        </div>
+      </div>
+
+      <p class="page-footer">© 2026 Ronak Surana</p>
+    </section>
+
+  </main>
+
+</div>
+
+<div class="game-modal" id="game-modal">
+  <div class="game-panel">
+    <div class="game-panel-head">
+      <h3>No connection? 🦖</h3>
+      <button class="game-close" id="game-close" aria-label="Close game">×</button>
+    </div>
+    <canvas id="game-canvas" width="600" height="220"></canvas>
+    <p class="game-hint">Space / tap / click to jump · dodge the cacti · Esc to close</p>
+    <div class="game-cta" id="game-cta">
+      <p>Still thinking about it? No pressure — but I don't bite.</p>
+      <a href="#contact" class="btn btn-primary" id="game-cta-link">Let's talk →</a>
+    </div>
+  </div>
+</div>
+
+<div class="game-modal" id="exit-modal">
+  <div class="game-panel">
+    <div class="game-panel-head">
+      <h3>Leaving already? 👋</h3>
+      <button class="game-close" id="exit-close" aria-label="Dismiss">×</button>
+    </div>
+    <div class="exit-panel-body">
+      <p>Before you go — stay a moment, play a quick game, and think about it.</p>
+      <div class="exit-actions">
+        <button class="btn btn-primary" id="exit-play">Play a quick game →</button>
+        <button class="btn btn-ghost" id="exit-dismiss">Maybe later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const preloader = document.getElementById('preloader');
+  const minDisplay = 500;
+  const start = Date.now();
+  window.addEventListener('load', () => {
+    const elapsed = Date.now() - start;
+    const wait = Math.max(0, minDisplay - elapsed);
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+      setTimeout(() => preloader.remove(), 600);
+    }, wait);
+  });
+
+  const body = document.body;
+  const toggleBtn = document.getElementById('theme-toggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (prefersLight) body.setAttribute('data-theme', 'light');
+
+  toggleBtn.addEventListener('click', () => {
+    const current = body.getAttribute('data-theme');
+    body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in-view'));
+  }
+
+  // active nav link tracking
+  const navLinks = document.querySelectorAll('#side-nav a');
+  const sections = document.querySelectorAll('.content-section');
+  if ('IntersectionObserver' in window && navLinks.length) {
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        const link = document.querySelector('#side-nav a[data-nav="' + id + '"]');
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(s => navObserver.observe(s));
+  }
+
+  // custom cursor
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const ring = document.getElementById('cursor-ring');
+
+    window.addEventListener('mousemove', (e) => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button, .skill-cell, .cert-row, .card, .tag').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    document.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('text-field'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('text-field'));
+    });
+  }
+
+  // easter egg: runner game
+  (function () {
+    const trigger = document.getElementById('game-trigger');
+    const modal = document.getElementById('game-modal');
+    const closeBtn = document.getElementById('game-close');
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    let raf = null;
+
+    function colors() {
+      const s = getComputedStyle(document.body);
+      return {
+        flow: s.getPropertyValue('--flow').trim() || '#34d399',
+        insight: s.getPropertyValue('--insight').trim() || '#e8a33d',
+        text: s.getPropertyValue('--text').trim() || '#edeff5',
+        muted: s.getPropertyValue('--text-muted').trim() || '#9aa3ba',
+        line: s.getPropertyValue('--line').trim() || '#232c42'
+      };
+    }
+
+    const GROUND_Y = 170;
+    let player, obstacles, score, speed, running, gameOver, spawnTimer;
+
+    const cta = document.getElementById('game-cta');
+    const ctaLink = document.getElementById('game-cta-link');
+    let ctaShown = false;
+
+    function reset() {
+      player = { x: 50, y: GROUND_Y, vy: 0, size: 20, jumping: false };
+      obstacles = [];
+      score = 0;
+      speed = 4.2;
+      spawnTimer = 60;
+      running = true;
+      gameOver = false;
+      ctaShown = false;
+      cta.classList.remove('show');
+    }
+
+    function jump() {
+      if (gameOver) { reset(); return; }
+      if (!player.jumping) {
+        player.vy = -9.5;
+        player.jumping = true;
+      }
+    }
+
+    function update() {
+      player.vy += 0.55;
+      player.y += player.vy;
+      if (player.y >= GROUND_Y) {
+        player.y = GROUND_Y;
+        player.vy = 0;
+        player.jumping = false;
+      }
+
+      spawnTimer--;
+      if (spawnTimer <= 0) {
+        obstacles.push({ x: canvas.width, w: 14 + Math.random() * 10, h: 18 + Math.random() * 14 });
+        spawnTimer = 70 + Math.random() * 50 - speed * 3;
+      }
+      obstacles.forEach(o => { o.x -= speed; });
+      obstacles = obstacles.filter(o => o.x + o.w > 0);
+
+      for (const o of obstacles) {
+        const px = player.x, py = player.y, ps = player.size;
+        if (px < o.x + o.w && px + ps > o.x && py + ps > GROUND_Y + ps - o.h) {
+          gameOver = true;
+          running = false;
+        }
+      }
+      if (gameOver && !ctaShown) {
+        ctaShown = true;
+        cta.classList.add('show');
+      }
+
+      score += 0.12;
+      speed += 0.0025;
+    }
+
+    function draw() {
+      const c = colors();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // ground
+      ctx.strokeStyle = c.line;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, GROUND_Y + player.size);
+      ctx.lineTo(canvas.width, GROUND_Y + player.size);
+      ctx.stroke();
+      // ground dashes
+      ctx.fillStyle = c.line;
+      const dashOffset = Math.floor(score * 8) % 30;
+      for (let x = -dashOffset; x < canvas.width; x += 30) {
+        ctx.fillRect(x, GROUND_Y + player.size + 5, 14, 2);
+      }
+
+      // dino (blocky pixel silhouette, Chrome-dino inspired)
+      const px = player.x, py = player.y, s = player.size;
+      const u = s / 20; // unit scale
+      ctx.fillStyle = c.flow;
+      const blocks = [
+        [4, 0, 12, 4], [2, 4, 14, 4], [2, 8, 16, 6],
+        [0, 10, 4, 4], [2, 14, 12, 4],
+        [4, 18, 4, 4], [12, 18, 4, 4]
+      ];
+      blocks.forEach(([bx, by, bw, bh]) => {
+        ctx.fillRect(px + bx * u, py + by * u, bw * u, bh * u);
+      });
+      // eye
+      const isLight = document.body.getAttribute('data-theme') === 'light';
+      ctx.fillStyle = isLight ? '#ffffff' : '#0a0e1a';
+      ctx.fillRect(px + 13 * u, py + 3 * u, 2 * u, 2 * u);
+
+      // cacti obstacles
+      ctx.fillStyle = c.insight;
+      obstacles.forEach(o => {
+        const baseY = GROUND_Y + player.size - o.h;
+        ctx.fillRect(o.x + o.w * 0.3, baseY, o.w * 0.4, o.h);
+        ctx.fillRect(o.x, baseY + o.h * 0.25, o.w * 0.3, o.h * 0.18);
+        ctx.fillRect(o.x + o.w * 0.7, baseY + o.h * 0.4, o.w * 0.3, o.h * 0.18);
+      });
+
+      ctx.fillStyle = c.muted;
+      ctx.font = '12px "JetBrains Mono", monospace';
+      ctx.fillText('score ' + Math.floor(score), canvas.width - 90, 20);
+
+      if (gameOver) {
+        ctx.fillStyle = c.text;
+        ctx.font = '600 16px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game over — space / tap to retry', canvas.width / 2, canvas.height / 2);
+        ctx.textAlign = 'left';
+      }
+    }
+
+    function loop() {
+      if (running) update();
+      draw();
+      raf = requestAnimationFrame(loop);
+    }
+
+    function openGame() {
+      modal.classList.add('open');
+      reset();
+      if (raf) cancelAnimationFrame(raf);
+      loop();
+    }
+    function closeGame() {
+      modal.classList.remove('open');
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+    }
+
+    trigger.addEventListener('click', openGame);
+    closeBtn.addEventListener('click', closeGame);
+    ctaLink.addEventListener('click', closeGame);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeGame(); });
+    canvas.addEventListener('mousedown', jump);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, { passive: false });
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && modal.classList.contains('open')) closeGame();
+      if (e.code === 'Space' && modal.classList.contains('open')) { e.preventDefault(); jump(); }
+    });
+
+    // exit-intent: offer the game before someone leaves
+    const exitModal = document.getElementById('exit-modal');
+    const exitPlay = document.getElementById('exit-play');
+    const exitDismiss = document.getElementById('exit-dismiss');
+    const exitClose = document.getElementById('exit-close');
+    const pageLoadTime = Date.now();
+    let exitShown = false;
+
+    function openExit() { exitModal.classList.add('open'); }
+    function closeExit() { exitModal.classList.remove('open'); }
+
+    document.addEventListener('mouseout', (e) => {
+      const leftThroughTop = !e.relatedTarget && e.clientY <= 0;
+      const enoughTimeOnPage = Date.now() - pageLoadTime > 4000;
+      if (leftThroughTop && enoughTimeOnPage && !exitShown && !modal.classList.contains('open')) {
+        exitShown = true;
+        openExit();
+      }
+    });
+
+    exitPlay.addEventListener('click', () => { closeExit(); openGame(); });
+    exitDismiss.addEventListener('click', closeExit);
+    exitClose.addEventListener('click', closeExit);
+    exitModal.addEventListener('click', (e) => { if (e.target === exitModal) closeExit(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && exitModal.classList.contains('open')) closeExit();
+    });
+  })();
+
+  const form = document.querySelector('#contact-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+    const subject = encodeURIComponent(`Portfolio inquiry from ${name || 'website visitor'}`);
+    const bodyText = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:ronaksurana2017@gmail.com?subject=${subject}&body=${bodyText}`;
+  });
+});
+</script>
+</body>
+</html>
